@@ -2,6 +2,9 @@
 
 You can use the [editor on GitHub](https://github.com/EGjohnson/EGjohnson.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
+### Notes on Site
+when making changes to html template files remove  "_site/" on the git ingore file so the changes will be noticed by the templates who are themselves drawing on the changed template.
+
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
 ### Markdown
@@ -27,6 +30,8 @@ Syntax highlighted code block
 ```
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+
+
 
 ### Jekyll Themes
 

@@ -2,27 +2,13 @@ body {
     margin: 60px auto;
     width: 70%;
 }
-nav ul {
-    font-family:'Helvetica', 'Arial', 'Sans-Serif';
-    padding: 0px;
-    list-style: none;
-    font-weight: bold;
-    font-size: 2.0em;
-}
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-    font-size: 2.0em;
-}
-
-footer ul {
+nav ul, footer ul {
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
     padding: 0px;
     list-style: none;
     font-weight: bold;
 }
-
-footer ul li {
+nav ul li, footer ul li {
     display: inline;
     margin-right: 20px;
 }
@@ -34,11 +20,11 @@ a:hover {
     text-decoration: underline;
 }
 h1 {
-    font-size: 3.0em;
+    font-size: 3em;
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
 }
 p {
-    font-size: 1.0em;
+    font-size: 1.5em;
     line-height: 1.4em;
     color: #333;
 }
@@ -55,3 +41,5 @@ ul.posts {
 ul.posts li {
     list-style: none;
 }
+Don't forget to commit the new CSS file!
+

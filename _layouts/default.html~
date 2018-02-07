@@ -14,8 +14,7 @@
 	    		</ul>
 			</nav>
 
-                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
-
+                        <img src="img.jpg" width="50%" height="50%"/>
 			<div class="container">
 			
 			{{ content }}

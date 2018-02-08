@@ -1,4 +1,22 @@
 
+```javascript
+Some code.
+```
+
+
+{% highlight ruby %}
+def show
+  @widget = Widget(params[:id])
+  respond_to do |format|
+    format.html # show.html.erb
+    format.json { render json: @widget }
+  end
+end
+{% endhighlight %}
+
+
+
+
 {% highlight r %}
 
 # Let's generate some fake data to illustrate combining data frames by stacking.

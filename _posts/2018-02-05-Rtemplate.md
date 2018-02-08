@@ -1,5 +1,5 @@
 
-{% highlight R linenos %}
+{% highlight r %}
 
 # Let's generate some fake data to illustrate combining data frames by stacking.
 

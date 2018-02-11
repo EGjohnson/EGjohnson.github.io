@@ -7,6 +7,20 @@ when making changes to html template files remove  "_site/" on the git ingore fi
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
+### Notes on Syntax Highlighter
+* Added highlighter: rouge to _config.yml
+markdown: kramdown
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+* generates syntax style file using rougify
+
+* Added syntax style file to all three /css/ folders 
+
+* called syntax style file in default.html layout from main/css
+
 ### Markdown
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for

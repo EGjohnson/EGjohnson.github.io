@@ -18,4 +18,4 @@ kramdown:
       start_line: 1
 
 permalink: /blog/:year/:month/:day/:title
-permalink: /blog
+# permalink: /blog

@@ -4,7 +4,7 @@
 			<title>{{ page.title }}</title>
 			<!-- link to main stylesheet -->
 			<link rel="stylesheet" type="text/css" href="/css/main.css">
-			<link rel="stylesheet"  href="/_site/assets/css/syntax.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
 
 		</head>
 		<body>
@@ -16,7 +16,7 @@
 	    		</ul>
 			</nav>
 
-                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+                        <img src="https://egjohnson.github.io/banner2.png" width="100%"/>
 
 			<div class="container">
 			

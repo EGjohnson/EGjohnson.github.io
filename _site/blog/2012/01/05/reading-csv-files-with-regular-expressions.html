@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Reading csv files with regular expressions</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>Reading csv files with regular expressions</h1>
+<p class="meta">05 Jan 2012</p>
+
+<div class="post">
+  <p>Python has a csv reader. It converts each line in the csv file into a list.
+The csv reader can interpret two default versions or ‘dialects’ of csv</p>
+
+<ul>
+  <li>
+    <p>1) comma</p>
+  </li>
+  <li>
+    <p>2) tab</p>
+  </li>
+</ul>
+
+<p>To open the csv file “normal.csv” below,</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>Creature,Legs,Eyes
+Dog,4,2
+Cyclops,2,1
+Spider,8,6
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>use the csv module like this:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="kn">import</span> <span class="nn">csv</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"normal.csv"</span><span class="p">,</span> <span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">mycsv</span><span class="p">:</span>
+    <span class="n">mycsvlines</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">mycsv</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">mycsvlines</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">row</span>
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>['Creature', 'Legs', 'Eyes']
+['Dog', '4', '2']
+['Cyclops', '2', '1']
+['Spider', '8', '6']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Note that in Python 2.5 and above close() is called automatically if the “with” statement is used.</p>
+
+<p>To open a tab-delimited file “normaltab.csv” that is listed in csv format …</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>Creature    Legs    Eyes
+Dog    4    2    
+Cyclops    2    1
+Spider    8    6
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>… you can just define the delimiter in the module.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"normaltab.csv"</span><span class="p">,</span> <span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">mycsv</span><span class="p">:</span>
+    <span class="n">mycsvlines</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">mycsv</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">mycsvlines</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">row</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>['Creature', 'Legs', 'Eyes']
+['Dog', '4', '2', '']
+['Cyclops', '2', '1']
+['Spider', '8', '6']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>You may come across a file where you have a strange combination of delimiters.</p>
+
+<p>See below:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>Creature;Legs-Eyes
+Dog;4-2
+Cyclops;2-1
+Spider;8-6
+
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>In this case, you do not need to create a brand new dialect. 
+It is really better to just import regular expressions and use
+reg.split.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="kn">import</span> <span class="nn">re</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"weird.csv"</span><span class="p">,</span> <span class="s">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">mycsv</span><span class="p">:</span>
+    <span class="n">mycsvlines</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">mycsv</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">mycsvlines</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'[;-]+'</span><span class="p">,</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c">#Python 2.5 and close() called automatically using the "with" statement</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>['Creature', 'Legs', 'Eyes']
+['Dog', '4', '2']
+['Cyclops', '2', '1']
+['Spider', '8', '6']
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Happy data munging.</p>
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

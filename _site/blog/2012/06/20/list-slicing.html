@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>List slicing</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>List slicing</h1>
+<p class="meta">20 Jun 2012</p>
+
+<div class="post">
+  
+<h2 id="slicing-single-dimension-lists">Slicing Single Dimension Lists:</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="n">numbers</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+
+<span class="c">#get 1 by index</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="c">#get 6 by backward index</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="mi">2</span>
+<span class="mi">6</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="c">#slice from beginning to 2</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="c">#slice from index 3 to end</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c">#slice numbers between index 2 and 6 </span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="c">#slice list elements in steps of two</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>
+<span class="c">#slice list elements 0-4 in steps of two</span>
+<span class="k">print</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="slicing-multi-dimension-lists">Slicing Multi-Dimension Lists:</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="n">letters</span><span class="o">=</span><span class="p">[[</span><span class="s">'a'</span><span class="p">,</span><span class="s">'b'</span><span class="p">,</span><span class="s">'c'</span><span class="p">],[</span><span class="s">'d'</span><span class="p">,</span><span class="s">'e'</span><span class="p">,</span><span class="s">'f'</span><span class="p">],[</span><span class="s">'g'</span><span class="p">,</span><span class="s">'h'</span><span class="p">,</span><span class="s">'i'</span><span class="p">]]</span>
+
+<span class="c">#slice 'a' out in row 0 and column 0</span>
+<span class="k">print</span> <span class="n">letters</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="n">a</span>
+
+<span class="c">#slice row 1</span>
+<span class="k">print</span> <span class="n">letters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="p">[</span><span class="s">'d'</span><span class="p">,</span> <span class="s">'e'</span><span class="p">,</span> <span class="s">'f'</span><span class="p">]</span>
+
+<span class="c">#slice column 0</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
+   <span class="k">print</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="n">a</span>
+<span class="n">d</span>
+<span class="n">g</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Groupby in python</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>Groupby in python</h1>
+<p class="meta">18 May 2012</p>
+
+<div class="post">
+  
+<h2 id="overview">Overview</h2>
+<ul>
+  <li>
+    <p>The Basics</p>
+  </li>
+  <li>
+    <p>Making it Useful</p>
+  </li>
+  <li>
+    <p>When it Gets Complicated</p>
+  </li>
+</ul>
+
+<h2 id="the-basics">The Basics</h2>
+<p>Honestly, most of the documentation for itertools makes me want to claw my eyes out. On that note, here is a step by step introduction to one of the more useful functions in intertools: groupby().</p>
+
+<p>Let’s say we have a list of pets…</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="n">Pets</span><span class="o">=</span><span class="p">[</span><span class="s">'Rat'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Rat'</span><span class="p">,</span><span class="s">'Toad'</span><span class="p">,</span>
+<span class="s">'Newt'</span><span class="p">,</span><span class="s">'Cat'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Toad'</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We want to group this list of pets by kind to look like this:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">Pets</span><span class="o">=</span><span class="p">[[</span><span class="s">'Cat'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Newt'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Owl'</span><span class="p">,</span> <span class="s">'Owl'</span><span class="p">,</span> <span class="s">'Owl'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Rat'</span><span class="p">,</span> <span class="s">'Rat'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Toad'</span><span class="p">,</span> <span class="s">'Toad'</span><span class="p">]]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>To do this we will need to..</p>
+
+<ol>
+  <li>
+    <p>import itertools</p>
+  </li>
+  <li>
+    <p>sort the data (this is important)</p>
+  </li>
+  <li>
+    <p>give the categories of pets a name. I chose pet_type</p>
+  </li>
+  <li>
+    <p>call the groups of pets something. I chose pet_group</p>
+  </li>
+</ol>
+
+<p>Now every time you loop through groupby(pets), we can print off the pet_type and the members of pet_group</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="n">Pets</span><span class="o">=</span><span class="p">[</span><span class="s">'Rat'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Rat'</span><span class="p">,</span><span class="s">'Toad'</span><span class="p">,</span>
+<span class="s">'Newt'</span><span class="p">,</span><span class="s">'Cat'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Toad'</span><span class="p">]</span>
+<span class="n">Pets</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Pets</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pet_type</span><span class="p">,</span> <span class="n">pet_group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">Pets</span><span class="p">):</span>
+   <span class="k">print</span> <span class="n">pet_type</span>
+   <span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">pet_group</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; 
+Cat
+['Cat']
+Newt
+['Newt']
+Owl
+['Owl', 'Owl', 'Owl']
+Rat
+['Rat', 'Rat']
+Toad
+['Toad', 'Toad']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Now notice something important: I have to convert pet_group to a list before
+printing it. Otherwise, I end up printing a group object.</p>
+
+<h2 id="making-it-useful">Making it Useful</h2>
+
+<p>groupby() is useful for two things:</p>
+
+<ol>
+  <li>
+    <p>identifying the unique categories in a list: making a list of all pet_type</p>
+  </li>
+  <li>
+    <p>partitioning the list by category: making a list of all pet_group</p>
+  </li>
+</ol>
+
+<p>This is done in a simple way below:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="n">pet_types</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">pet_groups</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">Pets</span><span class="o">=</span><span class="p">[</span><span class="s">'Rat'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Rat'</span><span class="p">,</span><span class="s">'Toad'</span><span class="p">,</span><span class="s">'Newt'</span><span class="p">,</span>
+<span class="s">'Cat'</span><span class="p">,</span><span class="s">'Owl'</span><span class="p">,</span><span class="s">'Toad'</span><span class="p">]</span>
+<span class="n">Pets</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Pets</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pet_type</span><span class="p">,</span> <span class="n">pet_group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">Pets</span><span class="p">):</span>
+   <span class="n">pet_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pet_type</span><span class="p">)</span>
+   <span class="n">pet_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">pet_group</span><span class="p">))</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Our list of unique categories…</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; pet_types
+['Cat', 'Newt', 'Owl', 'Rat', 'Toad']
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Our partitioned list ….</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; pet_groups
+[['Cat'], ['Newt'], ['Owl', 'Owl', 'Owl'], ['Rat', 'Rat'], 
+['Toad', 'Toad']]
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="when-it-gets-complicated">When it Gets Complicated</h2>
+<p>Lets say instead of having a simple list you need to group by column. Say you need</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="p">[[</span><span class="s">'Snape'</span><span class="p">,</span> <span class="s">'Prof'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'BuckBeak'</span><span class="p">,</span> <span class="s">'creature'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Harry'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Ron'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Hermione'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">]]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Converted to…</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="p">[</span>
+ <span class="p">[[</span><span class="s">'Snape'</span><span class="p">,</span> <span class="s">'Prof'</span><span class="p">]],</span>
+
+ <span class="p">[[</span><span class="s">'BuckBeak'</span><span class="p">,</span> <span class="s">'creature'</span><span class="p">]],</span>
+
+ <span class="p">[[</span><span class="s">'Harry'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span> 
+ <span class="p">[</span><span class="s">'Ron'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span> 
+ <span class="p">[</span><span class="s">'Hermione'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">]]</span>
+ <span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>The groupby function can accept keys to group by, so to get it to group by a particular column…</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="rouge-code"><pre><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+
+<span class="n">Hogwarts</span><span class="o">=</span><span class="p">[[</span><span class="s">'Snape'</span><span class="p">,</span> <span class="s">'Prof'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'BuckBeak'</span><span class="p">,</span> <span class="s">'creature'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Harry'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Ron'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Hermione'</span><span class="p">,</span> <span class="s">'student'</span><span class="p">]]</span>
+
+<span class="n">categories</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">groups</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="c">#write the key so the groupby function</span>
+<span class="c">#knows it is grouping by the second column</span>
+
+<span class="n">second</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c">#run loop</span>
+<span class="k">for</span> <span class="n">category</span> <span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">Hogwarts</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="n">second</span><span class="p">):</span>
+    <span class="n">categories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
+    <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>which will give you:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; groups
+[[['Snape', 'Prof']],
+
+ [['BuckBeak', 'creature']], 
+
+[['Harry', 'student'],
+ ['Ron', 'student'], 
+['Hermione', 'student']]]
+
+&gt;&gt;&gt; categories
+['Prof', 'creature', 'student']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>The only catch is that you need to have the data presorted by the column you are grouping.</p>
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

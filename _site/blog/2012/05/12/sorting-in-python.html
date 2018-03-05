@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Sorting in python</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>Sorting in python</h1>
+<p class="meta">12 May 2012</p>
+
+<div class="post">
+  
+<h2 id="types-of-sorting">Types of Sorting</h2>
+
+<ul>
+  <li>
+    <p>Reverse Sort</p>
+  </li>
+  <li>
+    <p>Sorting by Other Criteria</p>
+  </li>
+  <li>
+    <p>Sorting by Column</p>
+  </li>
+  <li>
+    <p>Sorting with a Dictionary</p>
+  </li>
+</ul>
+
+<h2 id="simple-sort">Simple Sort</h2>
+<p>python has a function to sort a list alphabetically or numerically. 
+Let’s say we have a list of people and creatures at Hogwarts and a list of housepoints…</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">Hogwarts</span><span class="o">=</span><span class="p">[</span><span class="s">'Harry'</span><span class="p">,</span><span class="s">'Hagrid'</span><span class="p">,</span><span class="s">'Ron'</span><span class="p">,</span><span class="s">'BuckBeak'</span><span class="p">,</span><span class="s">'Snape'</span><span class="p">]</span>
+<span class="n">Housepoints</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">To</span> <span class="n">sort</span><span class="p">,</span> <span class="n">we</span> <span class="n">simply</span> <span class="n">use</span> <span class="n">the</span> <span class="n">built</span> <span class="ow">in</span> <span class="n">function</span><span class="p">:</span>
+<span class="n">Hogwarts_sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Hogwarts</span><span class="p">)</span>
+<span class="n">Housepoints_sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Housepoints</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; Hogwarts_sorted
+['BuckBeak', 'Hagrid', 'Harry', 'Ron', 'Snape']
+&gt;&gt;&gt; Housepoints_sorted
+[0, 40, 100, 200, 300]
+&gt;&gt;&gt;
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="reverse-sort">Reverse Sort</h2>
+<p>If you would like to reverse the ordering:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">Hogwarts_sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Hogwarts</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; Hogwarts_sorted
+['Snape', 'Ron', 'Harry', 'Hagrid', 'BuckBeak']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="sorting-by-other-criteria">Sorting by Other Criteria</h2>
+<p>Lets say you want to sort by another criteria, like the second letter;
+or by length. Do do this, you need to create a key for the sort function to use:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">letter_key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">length_key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">Hogwarts_byletter</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Hogwarts</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="n">letter_key</span><span class="p">)</span>
+<span class="n">Hogwarts_bylength</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Hogwarts</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="n">length_key</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; Hogwarts_byletter
+['Harry', 'Hagrid', 'Snape', 'Ron', 'BuckBeak']
+&gt;&gt;&gt; Hogwarts_bylength
+['Ron', 'Harry', 'Snape', 'Hagrid', 'BuckBeak']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="sorting-by-column">Sorting by Column</h2>
+<p>Many times you will import data from an excel or csv file and have a list of lists that needs to be sorted by column. There is an easy way to do this using the sort function. In the same way that we sorted by the second letter of a string, we can sort a set of lists (rows) by one of the columns.</p>
+
+<p>Lets say we have the following data:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="p">[[</span><span class="s">'Harry'</span><span class="p">,</span><span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Hagrid'</span><span class="p">,</span><span class="s">'Prof'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Ron'</span><span class="p">,</span><span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Hermione'</span><span class="p">,</span><span class="s">'student'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'BuckBeak'</span><span class="p">,</span><span class="s">'creature'</span><span class="p">],</span>
+<span class="p">[</span><span class="s">'Snape'</span><span class="p">,</span><span class="s">'Prof'</span><span class="p">]]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="n">Let</span><span class="s">'s sort by the second column..</span><span class="err">
+</span><span class="s">Hogwart_members=[['</span><span class="n">Harry</span><span class="s">','</span><span class="n">student</span><span class="s">'],</span><span class="err">
+</span><span class="s">                ['</span><span class="n">Hagrid</span><span class="s">','</span><span class="n">Prof</span><span class="s">'],</span><span class="err">
+</span><span class="s">                ['</span><span class="n">Ron</span><span class="s">','</span><span class="n">student</span><span class="s">'],</span><span class="err">
+</span><span class="s">                ['</span><span class="n">Hermione</span><span class="s">','</span><span class="n">student</span><span class="s">'],</span><span class="err">
+</span><span class="s">                ['</span><span class="n">BuckBeak</span><span class="s">','</span><span class="n">creature</span><span class="s">'],</span><span class="err">
+</span><span class="s">                ['</span><span class="n">Snape</span><span class="s">','</span><span class="n">Prof</span><span class="s">']]</span><span class="err">
+
+</span><span class="s">#key tells sort to look at second element </span><span class="err">
+</span><span class="s">our_key=lambda member:member[1]</span><span class="err">
+
+</span><span class="s">Hogwart_members=sorted(Hogwart_members, key=our_key)</span><span class="err">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; Hogwart_members
+[['Hagrid', 'Prof'], 
+['Snape', 'Prof'], 
+['BuckBeak', 'creature'],
+['Harry', 'student'], 
+['Ron', 'student'],
+['Hermione', 'student']]
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>The data is now sorted by the second column into</p>
+<ul>
+  <li>Prof</li>
+  <li>creature</li>
+  <li>student</li>
+</ul>
+
+<p>The reason the Prof category appears first is because the sort function
+considers capital letters to be higher priority then lowercase letters.
+P&gt;c&gt;p.</p>
+
+<h2 id="sorting-with-a-dictionary">Sorting with a Dictionary</h2>
+<p>If you have a key for sorting, then simply make a dictionary out of it and apply it as a function. For example if we wanted to sort students by house points…</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="n">Students</span><span class="o">=</span><span class="p">[</span><span class="s">'Hermoine'</span><span class="p">,</span><span class="s">'Ron'</span><span class="p">,</span><span class="s">'Harry'</span><span class="p">]</span>
+<span class="n">housepoints</span><span class="o">=</span><span class="p">{</span><span class="s">'Hermoine'</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span><span class="s">'Harry'</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span><span class="s">'Ron'</span><span class="p">:</span><span class="mi">45</span><span class="p">}</span>
+<span class="n">lookup</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">housepoints</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+<span class="n">Students</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Students</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="n">lookup</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; Students
+['Ron', 'Harry', 'Hermoine']
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Well that’s all for now. Next post we will look at how to pair sort with a grouping function.</p>
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

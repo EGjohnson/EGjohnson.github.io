@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Converting dataforms</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>Converting dataforms</h1>
+<p class="meta">18 Jun 2012</p>
+
+<div class="post">
+  <p>A short cheat sheet for converting between data types and data containers in python:</p>
+
+<h2 id="data-types">data types</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">x</span><span class="o">=</span><span class="mf">12.34</span>
+<span class="k">print</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">#converts x to an integer</span>
+<span class="k">print</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c"># converts x to a float</span>
+<span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">#converts x to a string</span>
+<span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">#gives the data type of x</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; 
+12
+12.34
+12.34
+type 'float'
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="container-types">container types:</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="rouge-code"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">a_list</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">a_list</span>
+<span class="c">#1.list into array</span>
+<span class="n">a_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a_list</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">a_array</span>
+<span class="c">#2. array into list</span>
+<span class="n">a_list</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">a_array</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">a_list</span>
+<span class="c">#3. list and array to tuple</span>
+<span class="n">a_tuple</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">a_list</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">a_tuple</span>
+<span class="n">a_tuple</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">a_array</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">a_tuple</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>&gt;&gt;&gt; 
+[1, 2, 3, 4]
+[1 2 3 4]
+[1, 2, 3, 4]
+(1, 2, 3, 4)
+(1, 2, 3, 4)
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Finding and modifying list elements</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>Finding and modifying list elements</h1>
+<p class="meta">21 Jun 2012</p>
+
+<div class="post">
+  
+<h2 id="overview">Overview</h2>
+<ul>
+  <li>
+    <p>Finding Elements in a List</p>
+  </li>
+  <li>
+    <p>Modifying Elements in a List</p>
+  </li>
+  <li>
+    <p>Filtering Elements in List</p>
+  </li>
+  <li>
+    <p>Conditionally Replace Elements in List</p>
+  </li>
+  <li>
+    <p>Putting Lists Together and Taking Them Apart</p>
+  </li>
+  <li>
+    <p>Deleting Items From A List</p>
+  </li>
+</ul>
+
+<h2 id="finding-things-in-a-list">Finding Things in a List</h2>
+
+<p>To see check to see if something is in a list:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="n">Heroes</span><span class="o">=</span><span class="p">[</span><span class="s">'Thor'</span><span class="p">,</span><span class="s">'Iron Man'</span><span class="p">,</span><span class="s">'Black Widow'</span><span class="p">,</span><span class="s">'Hulk'</span><span class="p">,</span><span class="s">'Iron Man'</span><span class="p">]</span>
+<span class="c">#Let's see if Hawkeye is on the list</span>
+<span class="k">if</span><span class="s">'Hawkeye'</span> <span class="ow">in</span> <span class="n">Heroes</span><span class="p">:</span>
+   <span class="k">print</span> <span class="s">'He is on the list'</span>
+<span class="k">else</span><span class="p">:</span>
+   <span class="k">print</span> <span class="s">'No love for archers :('</span>
+<span class="o">&gt;&gt;&gt;</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>No love for archers :(</p>
+
+<p>To find an index of an element in a list by name:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">Heroes</span><span class="o">=</span><span class="p">[</span><span class="s">'Thor'</span><span class="p">,</span><span class="s">'Iron Man'</span><span class="p">,</span><span class="s">'Black Widow'</span><span class="p">,</span><span class="s">'Hulk'</span><span class="p">,</span><span class="s">'Iron Man'</span><span class="p">]</span>
+<span class="c">#finds index of first occurrence of 'Iron Man'</span>
+<span class="k">print</span> <span class="n">Heroes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">'Iron Man'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="mi">1</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="modifying-things-in-a-list">Modifying Things in a List</h2>
+
+<p>Mapping and list comprehensions are two different ways to modify values in a list.</p>
+
+<p>First, a list comprehensions: [f(x) for x in S if P(x)]</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="c">#I want to create a list of doubled values</span>
+<span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="c"># way 1</span>
+<span class="n">dblvals</span><span class="o">=</span><span class="p">[</span><span class="n">num</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">dblvals</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>or we can use mapping map(function,values):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="c"># way 2</span>
+<span class="n">dbl</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">*</span><span class="mi">2</span>
+<span class="n">dblvals2</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="n">dbl</span><span class="p">,</span><span class="n">values</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">dblvals2</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="filtering-elements-in-list">Filtering Elements in List</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="c">#I want to create a list of values less than 8</span>
+<span class="n">less8vals</span><span class="o">=</span><span class="p">[</span><span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="n">num</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">less8vals</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="conditionally-replace-elements-in-list">Conditionally Replace Elements in List</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="n">stuff</span><span class="o">=</span><span class="p">[</span><span class="n">a</span> <span class="k">if</span> <span class="n">a</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">stuff</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="putting-lists-together-and-taking-them-apart">Putting Lists Together and Taking Them Apart</h2>
+
+<p>Pulling out a Column of Data:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="c">#------------------------------------------------</span>
+<span class="n">xyvals</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">200</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">300</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">400</span><span class="p">]]</span>
+<span class="n">xv</span><span class="o">=</span><span class="p">[</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">xyvals</span><span class="p">]</span>
+<span class="n">yv</span><span class="o">=</span><span class="p">[</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">xyvals</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">xv</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">yv</span>
+<span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Putting Together Columns of Data</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c">#------------------------------------------------</span>
+<span class="n">newcoord</span><span class="o">=</span><span class="p">[[</span><span class="n">xv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">yv</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">xv</span><span class="p">))]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">newcoord</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">400</span><span class="p">]]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="deleting-items-from-a-list">Deleting Items From A List</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="n">sets</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="s">'A'</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="s">'Q'</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="s">'C'</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="s">'Q'</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="s">'E'</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="s">'A'</span><span class="p">]]</span>
+
+<span class="c">#p: pair </span>
+<span class="c">#pc: pair counter</span>
+
+<span class="n">pc</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s">'Q'</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">sets</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span>
+    <span class="n">pc</span><span class="o">=</span><span class="n">pc</span><span class="o">+</span><span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sets</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="s">'A'</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s">'C'</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="s">'E'</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s">'A'</span><span class="p">]]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Cluster computing r</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1>Cluster computing r</h1>
+<p class="meta">05 Mar 2018</p>
+
+<div class="post">
+  
+<h1 id="introduction">Introduction</h1>
+<p>Instead of running an analysis sequentially, you can use multiple cores in parallel. In this example, I will be using multiple cores on my own computer to construct a cluster.</p>
+
+<p>This type of code can be used for cores on the same node/computer. If you wish to use cores across different computers/nodes, then you should look into packages like Rmpi which will help you use a Message Passing Interfaces (MPI) to communicate across nodes.</p>
+
+<p>We will use three wrapper functions that allow us to execute familiar R functions in parallel. These wrapper functions split the work and distribute it to the nodes equally.</p>
+
+<p>We will look at wrappers for parallel implementations of:</p>
+<ul>
+  <li>
+    <p>lapply()</p>
+  </li>
+  <li>
+    <p>sapply()</p>
+  </li>
+  <li>
+    <p>foreach()</p>
+  </li>
+</ul>
+
+<h1 id="1-detecting-cores-and-making-a-socket-cluster">1. Detecting Cores and Making a Socket Cluster</h1>
+
+<p>Include package <em>parallel</em></p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">library</span><span class="p">(</span><span class="n">parallel</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We can check the number of cores we have to play with like this:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span><span class="w"> </span><span class="n">detectCores</span><span class="p">()</span><span class="w">
+</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>However, we do not want to use <em>all</em> of our cores, or we will crash the system.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="c1"># Calculate the number of cores and substract 2</span><span class="w">
+</span><span class="n">number_cores</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">detectCores</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<p>Now that we know how many cores we are working with we can construct the cluster using <em>makeCluster</em> from the <em>parallel</em> package. 
+If you have Mac/Unix system, use the option FORK (makeFORKcluster) when you construct your cluster. 
+Forking only works on Mac/Unix systems but is preferred to the default option PSOCK (makePSOCKcluster).</p>
+
+<p>Forking is preferred because:</p>
+<ul>
+  <li>
+    <p>all environmental variables are included (no manual export to cluster)</p>
+  </li>
+  <li>
+    <p>variables keep the same address (saves memory)</p>
+  </li>
+</ul>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="c1"># initiate cluster</span><span class="w">
+</span><span class="n">my.cluster</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">makeCluster</span><span class="p">(</span><span class="n">number_cores</span><span class="p">,</span><span class="n">type</span><span class="o">=</span><span class="s2">"FORK"</span><span class="p">)</span><span class="w">
+</span><span class="n">my.cluster</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>socket cluster with 6 nodes on host ‘localhost’
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Remember to close the socket cluster.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="c1"># stop cluster and release resources</span><span class="w">
+  </span><span class="n">stopCluster</span><span class="p">(</span><span class="n">my.cluster</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<h1 id="2-parallel-function-apply--parsapply--parlapply">2. Parallel Function Apply : parSapply() &amp; parLapply()</h1>
+<ul>
+  <li>
+    <p>lapply –&gt; parLapply (returns list )</p>
+  </li>
+  <li>
+    <p>sapply –&gt; parSapply (returns array)</p>
+  </li>
+</ul>
+
+<p>The functions <em>lapply</em> and <em>sapply</em> let us iterate a function over values and returns a list or vector respectively. See below.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="n">b</span><span class="o">&lt;</span><span class="m">-100</span><span class="w">
+</span><span class="n">lapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">b</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="w">
+</span><span class="n">sapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">b</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre>[[1]]
+[1] 101
+
+[[2]]
+[1] 102
+
+[[3]]
+[1] 103
+
+[1] 101 102 103
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>We can distribute the work done over several cores by using their parallel equivalents like so below:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="rouge-code"><pre><span class="w">
+</span><span class="c1"># cluster will only be able to see the variable below if it was Forked. </span><span class="w">
+</span><span class="c1"># otherwise need to pass it to the cluster</span><span class="w">
+</span><span class="n">b</span><span class="o">&lt;</span><span class="m">-100</span><span class="w">
+
+</span><span class="c1"># create a cluster using 6 of my computer cores FORK in environmental variables</span><span class="w">
+</span><span class="n">my.cluster</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">makeCluster</span><span class="p">(</span><span class="n">number_cores</span><span class="p">,</span><span class="n">type</span><span class="o">=</span><span class="s2">"FORK"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># use parralel version of lapply (return list)</span><span class="w">
+</span><span class="n">my.list</span><span class="o">&lt;-</span><span class="n">parLapply</span><span class="p">(</span><span class="n">my.cluster</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="w">
+
+</span><span class="c1">#use parallel version of sapply (return array)</span><span class="w">
+</span><span class="n">my.vector</span><span class="o">&lt;-</span><span class="n">parSapply</span><span class="p">(</span><span class="n">my.cluster</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># stop cluster and release resources</span><span class="w">
+</span><span class="n">stopCluster</span><span class="p">(</span><span class="n">my.cluster</span><span class="p">)</span><span class="w">
+
+</span><span class="n">print</span><span class="p">(</span><span class="s2">"my.list"</span><span class="p">)</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">my.list</span><span class="p">)</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="s2">"my.vector"</span><span class="p">)</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">my.vector</span><span class="p">)</span><span class="w">
+
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre>[1] "my.list"
+[[1]]
+[1] 101
+
+[[2]]
+[1] 102
+
+[[3]]
+[1] 103
+
+[[4]]
+[1] 104
+
+[[5]]
+[1] 105
+
+[1] "my.vector"
+[1] 101 102 103 104 105
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>What are these wrapper functions actually doing? They are splitting the vector fed to them evenly over the cores and running the function on them, then returning and combining the results. See the workings of the wrapper function <em>lapply</em> and <em>sapply</em> below.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span><span class="w"> </span><span class="n">parLapply</span><span class="w">
+
+</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">cl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">fun</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w"> 
+</span><span class="p">{</span><span class="w">
+    </span><span class="n">cl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">defaultCluster</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span><span class="w">
+    </span><span class="n">do.call</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">clusterApply</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">splitList</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">cl</span><span class="p">)),</span><span class="w"> 
+        </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lapply</span><span class="p">,</span><span class="w"> </span><span class="n">fun</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">),</span><span class="w"> </span><span class="n">quote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span><span class="w"> </span><span class="n">parSapply</span><span class="w">
+</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">cl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">,</span><span class="w"> </span><span class="n">simplify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">USE.NAMES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> 
+</span><span class="p">{</span><span class="w">
+    </span><span class="n">FUN</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">match.fun</span><span class="p">(</span><span class="n">FUN</span><span class="p">)</span><span class="w">
+    </span><span class="n">answer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">parLapply</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">as.list</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="w"> </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FUN</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p">)</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">USE.NAMES</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">is.character</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">is.null</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">answer</span><span class="p">)))</span><span class="w"> 
+        </span><span class="nf">names</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">X</span><span class="w">
+    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">identical</span><span class="p">(</span><span class="n">simplify</span><span class="p">,</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">answer</span><span class="p">))</span><span class="w"> 
+        </span><span class="n">simplify2array</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span><span class="w"> </span><span class="n">higher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">simplify</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"array"</span><span class="p">))</span><span class="w">
+    </span><span class="k">else</span><span class="w"> </span><span class="n">answer</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<p>Notice that <em>parSapply</em> is just a fancy version of <em>parLapply</em>. The wrapper <em>parLapply</em>, in turn, is just a function that invokes <em>clusterApply</em> in a smarter way.</p>
+
+<h1 id="3-parallel-looping-foreach">3. Parallel Looping: foreach()</h1>
+
+<ul>
+  <li>
+    <p>additionally needs: library(foreach), library(doParallel)</p>
+  </li>
+  <li>
+    <p>Looping construct for executing R code repeatedly</p>
+  </li>
+  <li>
+    <p>supports parallel execution</p>
+  </li>
+  <li>
+    <p>Note: cluster needs to be registered with registerDoParallel</p>
+  </li>
+</ul>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="n">library</span><span class="p">(</span><span class="n">foreach</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">Smisc</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">doParallel</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">iterators</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<p>Without parallization, <em>foreach()</em> functions like so:</p>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="c1"># multiple ... arguments</span><span class="w">
+</span><span class="n">the.funct</span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">){</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="p">}</span><span class="w">
+</span><span class="n">foreach</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="m">4</span><span class="o">:</span><span class="m">8</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="m">9</span><span class="o">:</span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">%do%</span><span class="w"> </span><span class="n">the.funct</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre>[[1]]
+[1] 37
+
+[[2]]
+[1] 52
+
+[[3]]
+[1] 69
+
+[[4]]
+[1] 88
+
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>What makes foreach() special is that it offers an option that allows you to choose how you want to combine the results. We will also add a <em>timeIt()</em> function from the <em>Smisc()</em> package to see how long this sequential implementation of <em>foreach()</em> takes.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c1"># with combine argument</span><span class="w">
+</span><span class="n">the.funct</span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">){</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">*</span><span class="n">k</span><span class="p">}</span><span class="w">
+</span><span class="n">timeIt</span><span class="p">(</span><span class="n">seq.output</span><span class="o">&lt;-</span><span class="n">foreach</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="m">4</span><span class="o">:</span><span class="m">8</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="m">9</span><span class="o">:</span><span class="m">12</span><span class="p">,</span><span class="n">.combine</span><span class="o">=</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">%do%</span><span class="w"> </span><span class="n">the.funct</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">))</span><span class="w">
+</span><span class="n">print</span><span class="p">(</span><span class="n">seq.output</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>0.01 seconds 
+[1] 37 52 69 88
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>The output is combined into a nice vector. This took 0.01 seconds.</p>
+
+<p>The process for running <em>foreach()</em> in parallel involves one more step than the previous wrappers. You need to register your cluster with the function <em>registerDoParallel()</em>, so that you can use the operator <em>%do%</em> in parallel.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="c1">#set up cluster: only fork on non-windows</span><span class="w">
+</span><span class="n">my.cluster</span><span class="o">&lt;-</span><span class="n">makeCluster</span><span class="p">(</span><span class="n">number_cores</span><span class="p">,</span><span class="n">type</span><span class="o">=</span><span class="s2">"FORK"</span><span class="p">)</span><span class="w">
+</span><span class="c1">#register mycluster for operator %dopar%</span><span class="w">
+</span><span class="n">registerDoParallel</span><span class="p">(</span><span class="n">my.cluster</span><span class="p">)</span><span class="w">
+</span><span class="c1">#run iteration over clusters</span><span class="w">
+</span><span class="n">foreach</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="m">4</span><span class="o">:</span><span class="m">8</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="m">8</span><span class="o">:</span><span class="m">12</span><span class="p">,</span><span class="n">.combine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">  </span><span class="o">%dopar%</span><span class="w">  </span><span class="n">the.funct</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="w">
+</span><span class="c1"># stop cluster and release resources</span><span class="w">
+</span><span class="n">stopCluster</span><span class="p">(</span><span class="n">my.cluster</span><span class="p">)</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>0.01 seconds 
+[1] 33 47 63 81
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Hey, wait! Why wasn’t this any faster?</p>
+
+<h1 id="when-to-use-r-in-parallel">When to use R in parallel</h1>
+<p>Parallel jobs are not always faster if the data set is small, as in the above toy examples. What you need to remember is running jobs in parallel incurs overhead, the data needs to be distributed, workers need to receive instructions, and then all the output needs to be recombined. The performance of your program will only improve if your job takes a long time to run sequentially.</p>
+
+
+</div>
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>Using C++ Functions In Your R Code</title>
+			<!-- link to main stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/css/main.css">
+			<link rel="stylesheet"  href="/css/syntax.css">
+
+		</head>
+		<body>
+			<nav>
+	    		<ul>
+	        		<li><a href="/">Home</a></li>
+		        	<li><a href="/about/">About</a></li>
+	        		<li><a href="/code/">Projects &amp; Code</a></li>
+	    		</ul>
+			</nav>
+
+                        <img src="https://egjohnson.github.io/banner.png" width="100%"/>
+
+			<div class="container">
+			
+			<h1 style="text-transform: capitalize;">Using C++ Functions In Your R Code</h1>
+<p class="meta">06 Mar 2018</p>
+
+<div class="post">
+  
+<h2 id="why-would-i-want-to-mix-c-and-r">Why would I want to mix C++ and R?</h2>
+<p>C++ is a statically-typed general purpose programming language that is typically compiled. Programs that are written in C++ execute quickly and the language has extensive libraries so many standard algorithms are easy to find and deploy. When a particular calculation is bottlenecking your code in R, it sometimes makes sense to rewrite the performance-critical snippets in C++.</p>
+
+<h2 id="incorporating-c-into-r-with-rcpp">Incorporating C++ into R with Rcpp</h2>
+<p>The best way to incorporate C++ into R, is to use <a href="http://www.rcpp.org/">Rcpp</a>. This powerful API allows R to interface with C++. Rcpp (stands for “R and C plus plus”) can be downloaded as a package for R. It integrates easily with Rstudio allowing your to rewrite the slow portions of your code in C++ without disrupting your workflow.</p>
+
+<h2 id="short-example-writing-a-c-function-for-r">Short Example: Writing a C++ function for R</h2>
+
+<p>Let’s write a function to convert Celsius to Fahrenheit in C++ and use it in R.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">Rcpp</span><span class="p">)</span><span class="w">
+</span><span class="c1"># make sure to declare the datatype you are returning with C++</span><span class="w">
+</span><span class="n">cppFunction</span><span class="p">(</span><span class="w">
+</span><span class="s1">'double convert_temp(double celsius) 
+{
+  double fahrenheit = (celsius * 9.0) / 5.0 + 32;
+  return fahrenheit;
+}'</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span><span class="c1"># we can treat convert_temp like an R function now</span><span class="w">
+</span><span class="n">convert_temp</span><span class="p">(</span><span class="m">30.0</span><span class="p">)</span><span class="w">
+
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>&gt; convert_temp(30.0)
+[1] 86
+&gt; convert_temp(20)
+[1] 68
+&gt; convert_temp(-20)
+[1] -4
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="short-example-using-c-functions-from-a-source-file">Short Example: Using C++ functions from a source file</h2>
+
+<p>1) Create a new C++ file</p>
+
+<p>In Rstudio, go to &gt; <strong>New File</strong> and choose <strong>C++ file</strong> (extension .cpp).</p>
+
+<p>2) Add the Rcpp header file and the Rcpp namespace to the C++ file</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="cp">#include &lt;Rcpp.h&gt;
+#include &lt;cmath&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">Rcpp</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<ul>
+  <li>
+    <p><strong>#include &lt;Rcpp.h&gt;</strong> : This is a preprocessor directive. We can tell because it begins with a # sign. These directives are processed before the code compiles. In this case, we are telling the program to include the Rcpp.h header file before we begin to do anything else. This header file allows the functions in our program to work with R.</p>
+  </li>
+  <li>
+    <p><strong>#include &lt;cmath&gt;</strong> : This is also a preprocessor directive. This header file gives us access to a library with math functions.</p>
+  </li>
+  <li>
+    <p><strong>using namespace Rcpp</strong>: In this statement, we declare Rcpp as the default namespace used in this program. Doing this prevents name collisions (two libraries using the same name for different commands).</p>
+  </li>
+</ul>
+
+<p>3) Add function with an export statement</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="c1">// [[Rcpp::export]]
+</span><span class="kt">double</span> <span class="nf">take_sqrt</span><span class="p">(</span><span class="kt">double</span> <span class="n">number</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// sqrt() is a library function to calculate square root
+</span>  <span class="kt">double</span> <span class="n">squareRoot</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">number</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">squareRoot</span><span class="p">;</span>
+<span class="p">}</span>
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Note that if the <em>// [[Rcpp::export]]</em> statement is not in front of your function, you will not be able to use it in an R session.
+If you cannot get the export to work, check that you have left a space between the double forward slashes and the double
+brackets.</p>
+
+<p>The full C++ source file should look like this:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="cp">#include &lt;Rcpp.h&gt;
+#include &lt;cmath&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">Rcpp</span><span class="p">;</span>
+
+<span class="c1">// [[Rcpp::export]]
+</span><span class="kt">double</span> <span class="nf">take_sqrt</span><span class="p">(</span><span class="kt">double</span> <span class="n">number</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// sqrt() is a library function to calculate square root
+</span>  <span class="kt">double</span> <span class="n">squareRoot</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">number</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">squareRoot</span><span class="p">;</span>
+<span class="p">}</span>
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>4) execute the function in an R session</p>
+
+<p>Use the function <em>sourceCpp()</em> from the Rcpp package to compile the source.
+Now you can use the function you wrote in C++.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="o">&gt;</span> sourceCpp<span class="o">(</span>file <span class="o">=</span><span class="s2">"~/PetGit/myrsandbox/Cfile.cpp"</span><span class="o">)</span>
+<span class="o">&gt;</span> take_sqrt<span class="o">(</span>9<span class="o">)</span>
+<span class="o">[</span>1] 3
+<span class="o">&gt;</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="other-resources">Other resources</h2>
+
+<ul>
+  <li><a href="https://www.ntu.edu.sg/home/ehchua/programming/cpp/cp0_Introduction.html">Introduction to the basics of C++ for Novices</a></li>
+  <li><a href="https://www.programiz.com/cpp-programming/arrays">Intuitive C++ Tutorial</a></li>
+  <li><a href="http://adv-r.had.co.nz/Rcpp.html">Introduction to the Rcpp package</a></li>
+  <li><a href="http://www.mjdenny.com/Rcpp_Intro.html">Using Rcpp with Rstudio</a></li>
+  <li><a href="https://support.rstudio.com/hc/en-us/articles/200486088-Using-Rcpp-with-RStudio">Examples of how to write Rcpp packages</a></li>
+  <li><a href="https://www.r-bloggers.com/another-nice-rcpp-example/">Benchmarking R function vs C++ function</a></li>
+</ul>
+
+
+</div>
+
+
+
+			
+			</div><!-- /.container -->
+			<footer>
+	    		<ul>
+	        		<li><a href="mailto:beth.g.johnson@gmail.com">email</a></li>
+	        		<li><a href="https://github.com/EGjohnson">github.com/EGjohnson</a></li>
+				</ul>
+			</footer>
+		</body>
+	</html>
